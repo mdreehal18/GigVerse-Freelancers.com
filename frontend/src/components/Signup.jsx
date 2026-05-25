@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useAuth } from "../AuthContext";
-import { signup } from "../api";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../AuthContext";
+import { signup } from "../api";
 
 
 function Signup() {
@@ -88,8 +88,8 @@ function Signup() {
         <div>
           <label>Role:</label>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="CLIENT">Client</option>
-            <option value="FREELANCER">Freelancer</option>
+           <option value="client">Client</option>
+<option value="freelancer">Freelancer</option>
           </select>
         </div>
         {error && <p>{error}</p>}
