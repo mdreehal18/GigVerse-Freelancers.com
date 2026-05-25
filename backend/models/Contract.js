@@ -7,7 +7,8 @@ const contractSchema = new mongoose.Schema({
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   freelancerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   bidAmount: Number,
-  completionDate: Date
-});
+  completionDate: Date,
+  status: { type: String, default: 'active' }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Contract', contractSchema);

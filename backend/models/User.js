@@ -12,7 +12,6 @@ const UserSchema = new mongoose.Schema({
       skills: [String],
       portfolio: [String]
     },
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
     bids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }]
   });
   

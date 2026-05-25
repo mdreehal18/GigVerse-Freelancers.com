@@ -28,28 +28,18 @@ exports.getJobs = async (req, res) => {
     }
 };
 
-exports.getJobsByUserId = async (req, res) => {
-    try {
-        const userId = req.params.userId; // Extract user ID from route parameter
-        const jobs = await Job.find({ createdBy: userId }); // Query to find jobs by user ID
-
-        if (!jobs.length) {
-            return res.status(404).json({ message: 'No jobs found for this user' });
-        }
-        res.json(jobs); // Send back the array of jobs
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching jobs', error: error.message });
-    }
-};
-
-
 exports.updateJob = async (req, res) => {
     try {
-        const job = await Job.findByIdAndUpdate(req.params.jobId, req.body, { new: true, runValidators: true });
+        // Check if user is the job creator
+        const job = await Job.findById(req.params.jobId);
         if (!job) {
             return res.status(404).json({ message: 'Job not found' });
         }
-        res.json(job);
+        if (job.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Not authorized to update this job' });
+        }
+        const updatedJob = await Job.findByIdAndUpdate(req.params.jobId, req.body, { new: true, runValidators: true });
+        res.json(updatedJob);
     } catch (error) {
         res.status(500).json({ message: 'Error updating job', error: error.message });
     }
@@ -57,6 +47,14 @@ exports.updateJob = async (req, res) => {
 
 exports.deleteJob = async (req, res) => {
     try {
+        // Check if user is the job creator
+        const job = await Job.findById(req.params.jobId);
+        if (!job) {
+            return res.status(404).json({ message: 'Job not found' });
+        }
+        if (job.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Not authorized to delete this job' });
+        }
         await Job.findByIdAndDelete(req.params.jobId);
         res.json({ message: 'Job deleted successfully' });
     } catch (error) {
@@ -91,7 +89,7 @@ exports.getJobById = async (req, res) => {
 // Job controller
 exports.getJobByIdWithBids = async (req, res) => {
     try {
-        const job = await Job.findById(req.params.jobId).populate('bids');
+        const job = await Job.findById(req.params.jobId).populate('bids').populate('createdBy', 'name email');
         if (!job) {
             return res.status(404).json({ message: 'Job not found' });
         }
